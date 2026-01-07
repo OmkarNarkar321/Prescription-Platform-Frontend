@@ -2,20 +2,55 @@ import axios from 'axios'
 import { API_BASE_URL } from '../utils/constants'
 import { getToken } from '../utils/auth'
 
+// Create axios instance with /api base path
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: `${API_BASE_URL}/api`,
   headers: {
     'Content-Type': 'application/json'
-  }
+  },
+  timeout: 30000, // 30 second timeout
 })
 
-api.interceptors.request.use((config) => {
-  const token = getToken()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    const token = getToken()
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    console.log('API Request:', config.method.toUpperCase(), config.url)
+    return config
+  },
+  (error) => {
+    console.error('Request error:', error)
+    return Promise.reject(error)
   }
-  return config
-})
+)
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => {
+    console.log('API Response:', response.status, response.config.url)
+    return response
+  },
+  (error) => {
+    console.error('API Error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: error.response?.data?.message || error.message
+    })
+    
+    // Handle specific error cases
+    if (error.response?.status === 401) {
+      // Unauthorized - clear token and redirect to login
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      window.location.href = '/'
+    }
+    
+    return Promise.reject(error)
+  }
+)
 
 // Auth APIs
 export const doctorSignup = (formData) => api.post('/auth/doctor/signup', formData, {

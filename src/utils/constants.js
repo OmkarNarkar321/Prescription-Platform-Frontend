@@ -1,4 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+// ⚠️ CRITICAL FIX: Removed /api from here since it's already in api.js baseURL
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 export const ROLES = {
   DOCTOR: 'DOCTOR',
