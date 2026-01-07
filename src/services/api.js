@@ -2,13 +2,13 @@ import axios from 'axios'
 import { API_BASE_URL } from '../utils/constants'
 import { getToken } from '../utils/auth'
 
-// Create axios instance with /api base path
+// Create axios instance - baseURL should NOT have trailing slash
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 30000, // 30 second timeout
+  timeout: 30000,
 })
 
 // Request interceptor
@@ -18,11 +18,19 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    console.log('API Request:', config.method.toUpperCase(), config.url)
+    
+    // Debug logs
+    console.log('📤 API Request:', {
+      method: config.method.toUpperCase(),
+      url: config.url,
+      baseURL: config.baseURL,
+      fullURL: config.baseURL + config.url
+    })
+    
     return config
   },
   (error) => {
-    console.error('Request error:', error)
+    console.error('❌ Request Error:', error)
     return Promise.reject(error)
   }
 )
@@ -30,19 +38,24 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
-    console.log('API Response:', response.status, response.config.url)
+    console.log('✅ API Response:', {
+      status: response.status,
+      url: response.config.url,
+      data: response.data
+    })
     return response
   },
   (error) => {
-    console.error('API Error:', {
+    console.error('❌ API Error:', {
       url: error.config?.url,
       status: error.response?.status,
-      message: error.response?.data?.message || error.message
+      statusText: error.response?.statusText,
+      message: error.response?.data?.message || error.message,
+      fullError: error.response?.data
     })
     
-    // Handle specific error cases
+    // Handle 401 Unauthorized
     if (error.response?.status === 401) {
-      // Unauthorized - clear token and redirect to login
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       window.location.href = '/'
@@ -53,29 +66,38 @@ api.interceptors.response.use(
 )
 
 // Auth APIs
-export const doctorSignup = (formData) => api.post('/auth/doctor/signup', formData, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-})
+export const doctorSignup = (formData) => 
+  api.post('/auth/doctor/signup', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
 
-export const doctorLogin = (data) => api.post('/auth/doctor/login', data)
+export const doctorLogin = (data) => 
+  api.post('/auth/doctor/login', data)
 
-export const patientSignup = (formData) => api.post('/auth/patient/signup', formData, {
-  headers: { 'Content-Type': 'multipart/form-data' }
-})
+export const patientSignup = (formData) => 
+  api.post('/auth/patient/signup', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
 
-export const patientLogin = (data) => api.post('/auth/patient/login', data)
+export const patientLogin = (data) => 
+  api.post('/auth/patient/login', data)
 
 // Patient APIs
-export const getAllDoctors = () => api.get('/patients/doctors')
+export const getAllDoctors = () => 
+  api.get('/patients/doctors')
 
 // Consultation APIs
-export const createConsultation = (data) => api.post('/consultations', data)
+export const createConsultation = (data) => 
+  api.post('/consultations', data)
 
-export const getPatientConsultations = () => api.get('/consultations/patient')
+export const getPatientConsultations = () => 
+  api.get('/consultations/patient')
 
-export const getDoctorConsultations = () => api.get('/consultations/doctor')
+export const getDoctorConsultations = () => 
+  api.get('/consultations/doctor')
 
-export const getConsultationById = (id) => api.get(`/consultations/${id}`)
+export const getConsultationById = (id) => 
+  api.get(`/consultations/${id}`)
 
 // Prescription APIs
 export const createPrescription = (consultationId, data) => 

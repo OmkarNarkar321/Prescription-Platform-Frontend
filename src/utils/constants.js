@@ -1,4 +1,3 @@
-// ⚠️ CRITICAL FIX: Removed /api from here since it's already in api.js baseURL
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 export const ROLES = {
@@ -18,3 +17,10 @@ export const SPECIALTIES = [
   'ENT Specialist',
   'Ophthalmologist'
 ]
+
+// Debug logs (remove after testing)
+if (typeof window !== 'undefined') {
+  console.log('🔍 API_BASE_URL:', API_BASE_URL)
+  console.log('🔍 VITE_API_URL:', import.meta.env.VITE_API_URL)
+  console.log('🔍 Mode:', import.meta.env.MODE)
+}
