@@ -4,7 +4,7 @@ import { getToken } from '../utils/auth'
 
 // Create axios instance - baseURL should NOT have trailing slash
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
   },
