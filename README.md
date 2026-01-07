@@ -7,15 +7,10 @@ It provides a clean, responsive, and role-based UI for Doctors and Patients to m
 🚀 Tech Stack
 
 React.js (Vite)
-
 Tailwind CSS (PostCSS configured)
-
 React Router DOM
-
 Axios
-
 JWT-based Authentication
-
 Responsive Medical UI
 
 📁 Folder Structure
@@ -39,11 +34,8 @@ frontend/
 🔐 Authentication & Roles
 
 Doctor
-
 Patient
-
 JWT stored securely on login
-
 Role-based route protection
 
 🌐 Frontend Routes / Pages
@@ -64,19 +56,14 @@ Route	Description
 💳 Consultation Flow
 
 Select Doctor
-
 Multi-step medical form
-
 QR-based payment
-
 Submit consultation
-
 Doctor generates prescription PDF
 
 ⚙️ Environment Variables
 
 Create .env in /frontend:
-
 VITE_API_BASE_URL=http://localhost:5000/api
 
 ▶️ Setup Instructions
@@ -87,19 +74,13 @@ npm run dev
 📱 UI Highlights
 
 Soft medical color palette
-
 Fully responsive design
-
 Tailwind utility-only styling
-
 Reusable components
-
 No external UI libraries
 
 ✅ Production Ready
 
 API base URL configured
-
 Secure JWT handling
-
 Modular and scalable architecture
